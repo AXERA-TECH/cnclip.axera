@@ -29,7 +29,7 @@ python export_onnx.py
 此处仅用作demo，建议使用实际参与训练的数据
 - image数据:
 
-下载[dataset_v04.zip](https://github.com/user-attachments/files/20480889/dataset_v04.zip)或自行准备
+    下载[dataset_v04.zip](https://github.com/user-attachments/files/20480889/dataset_v04.zip)或自行准备
 
 - text数据:
     ```
@@ -75,6 +75,19 @@ pulsar2 build --config build_config/cnclip_vit_l14_336px_text_u16.json --input c
 demo基于原repo中的提取图文特征向量并计算相似度，将demo/和编译好的axmodel拷贝到开发板上后，运行demo_onboard.py文件
 
 (demo_onnx.py为对应的onnx版本,比较可知二者结果相似)
+
+输入图片：
+
+![](demo/pokemon.jpeg)
+
+输入文本：
+
+["杰尼龟", "妙蛙种子", "皮卡丘", "小火龙"]
+
+输入类别置信度：
+
+[0.01921699 0.033048   0.9386759  0.00905911]
+
 ```shell
 $ python demo.py
 [INFO] Available providers:  ['AxEngineExecutionProvider']
