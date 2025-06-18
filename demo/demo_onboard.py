@@ -1,9 +1,9 @@
 from PIL import Image
 import numpy as np
-import onnxruntime as ort
+# import onnxruntime as ort
 import cv2
 
-# import axengine as axe
+import axengine as axe
 from bert_tokenizer import FullTokenizer
 
 def tokenize(texts):
@@ -17,7 +17,7 @@ def tokenize(texts):
         all_tokens.append([_tokenizer.vocab['[CLS]']] + _tokenizer.convert_tokens_to_ids(_tokenizer.tokenize(text))[
                                                         :context_length - 2] + [_tokenizer.vocab['[SEP]']])
 
-    result = np.zeros((len(all_tokens), context_length), dtype=np.int64)
+    result = np.zeros((len(all_tokens), context_length), dtype=np.int32)
 
     for i, tokens in enumerate(all_tokens):
         assert len(tokens) <= context_length
@@ -26,26 +26,26 @@ def tokenize(texts):
     return result
 
 def get_image_encoder():
-    # image_encoder = axe.InferenceSession("cnclip_vit_l14_336px_image_encoder.axmodel")
-    image_encoder = ort.InferenceSession("cnclip_vit_l14_336px_image_encoder.onnx")
+    image_encoder = axe.InferenceSession("cnclip_vit_l14_336px_image_encoder.axmodel")
+    # image_encoder = ort.InferenceSession("cnclip_vit_l14_336px_image_encoder.onnx")
 
     for input in image_encoder.get_inputs():
-        print(input.name, input.shape, input.type)
+        print(input.name, input.shape, input.dtype)
 
     for output in image_encoder.get_outputs():
-        print(output.name, output.shape, output.type)
+        print(output.name, output.shape, output.dtype)
     
     return image_encoder
 
 def get_text_encoder():
-    # text_encoder = axe.InferenceSession("cnclip_vit_l14_336px_bert_encoder.axmodel")
-    text_encoder = ort.InferenceSession("cnclip_vit_l14_336px_bert_encoder.onnx")
+    text_encoder = axe.InferenceSession("cnclip_vit_l14_336px_bert_encoder.axmodel")
+    # text_encoder = ort.InferenceSession("cnclip_vit_l14_336px_bert_encoder.onnx")
 
     for input in text_encoder.get_inputs():
-        print(input.name, input.shape, input.type)
+        print(input.name, input.shape, input.dtype)
 
     for output in text_encoder.get_outputs():
-        print(output.name, output.shape, output.type)
+        print(output.name, output.shape, output.dtype)
     
     return text_encoder
 
@@ -102,14 +102,14 @@ if __name__ == "__main__":
     device = "cpu"
     # _, preprocess = load_from_name("ViT-B-16", device=device, download_root='./')
 
-    image = preprocess(Image.open("demo_onboard/pokemon.jpeg"))
+    image = preprocess(Image.open("pokemon.jpeg"))
     texts = tokenize(["杰尼龟", "妙蛙种子", "皮卡丘", "小火龙"])
     
 
     image_features = image_encoder.run(None, {"image": image})[0]
     text_features = []
     for t in texts:
-        text_features.append(text_encoder.run(None,{"text": [t]}))
+        text_features.append(text_encoder.run(None,{"text": np.array([t])}))
     image_features = np.array(image_features)
     text_features = np.array([t[0][0] for t in text_features])
     # 对特征进行归一化，请使用归一化后的图文特征用于下游任务
