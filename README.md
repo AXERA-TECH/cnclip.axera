@@ -89,7 +89,7 @@ demo基于原repo中的提取图文特征向量并计算相似度，将demo/和�
     [0.01921699 0.033048   0.9386759  0.00905911]
 
 ```shell
-$ python demo.py
+$ python demo_onboard.py
 [INFO] Available providers:  ['AxEngineExecutionProvider']
 [INFO] Using provider: AxEngineExecutionProvider
 [INFO] Chip type: ChipType.MC50

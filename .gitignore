@@ -5,3 +5,4 @@ dataset/bert_cali/*
 *.onnx
 *.zip
 *.pt
+huggingface
